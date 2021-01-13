@@ -18,7 +18,7 @@ client = TelegramClient('python-archiver', api_id, api_hash)
 client.start()
 
 # The_DonaId, CoronaChanNews, CoronaChanNews2
-messages = client.get_messages(channel_name, limit=config['archive']['limit'])
+messages = client.get_messages(channel_name, limit=int(config['archive']['limit']))
 # messages[0].download_media()
 
 print(f"{messages.total} Total Messages")
