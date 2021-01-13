@@ -1,0 +1,7 @@
+# Auth Files
+login.ini
+*.session
+*.session-journal
+
+# Venv
+venv
