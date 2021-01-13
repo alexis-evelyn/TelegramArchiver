@@ -5,3 +5,6 @@ login.ini
 
 # Venv
 venv
+
+# Output
+*.csv
