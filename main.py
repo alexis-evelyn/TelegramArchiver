@@ -26,8 +26,11 @@ print(f"{messages.total} Total Messages")
 # TODO: Verify How To Not Crash On Too Small Number Of Messages
 channel: pd.DataFrame = pd.DataFrame()
 for x in range(0, messages.total):
-    message_dict: dict = messages[x].to_dict()
-    channel = channel.append(message_dict, ignore_index=True)
+    try:
+        message_dict: dict = messages[x].to_dict()
+        channel = channel.append(message_dict, ignore_index=True)
+    except:
+        print(f"Failed {x}/{messages.total}!!!")
 
 # print(channel)
 print(channel.message)
