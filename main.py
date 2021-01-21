@@ -1,5 +1,8 @@
 #!/usr/bin/python3
 
+# Channels
+# The_DonaId, CoronaChanNews2, AltSkullMirror
+
 from telethon import TelegramClient, events, sync
 
 import pandas as pd
@@ -17,7 +20,7 @@ channel_name: str = config['archive']['channel']
 client = TelegramClient('python-archiver', api_id, api_hash)
 client.start()
 
-# The_DonaId, CoronaChanNews, CoronaChanNews2
+# Messages
 messages = client.get_messages(channel_name, limit=int(config['archive']['limit']))
 # messages[0].download_media()
 
