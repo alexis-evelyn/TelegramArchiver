@@ -11,6 +11,7 @@ from typing import Union, TextIO, List, Optional
 
 from telethon import TelegramClient, errors
 from telethon.client.messages import _IDsIter, _MessagesIter
+from telethon.errors import ChannelPrivateError
 from telethon.tl.types import Chat, Message
 
 config = configparser.ConfigParser()
@@ -102,9 +103,9 @@ async def download_channels():
 
         # Remove Non-ASCII Characters (As Telegram Doesn't Accept Them At All)
         if re.match(r"[^\x00-\x7F]+", clean):
-            print(f"Before: {clean}")
+            # print(f"Before: {clean}")
             clean: str = re.sub(r"[^\x00-\x7F]+", r"", clean)
-            print(f"After: {clean}")
+            # print(f"After: {clean}")
 
         # Verify String Is Not Empty
         if clean == "":
@@ -123,6 +124,12 @@ async def download_channels():
 
         try:
             await save_channel(channel=clean)
+        except ChannelPrivateError as e:
+            # telethon.errors.rpcerrorlist.ChannelPrivateError
+            print(f"{clean} Is A Private Channel!!! Logging!!!")
+            with open(file="working/private-channels.txt", mode="a+") as private:
+                private.writelines(f"{clean}\n")
+                private.close()
         except ValueError as e:
             message: str = e.args[0]
             ignore: bool = False
