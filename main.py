@@ -107,6 +107,9 @@ async def download_channels():
             clean: str = re.sub(r"[^\x00-\x7F]+", r"", clean)
             # print(f"After: {clean}")
 
+        # Make Sure No Whitespace At Ends Of Channels
+        clean: str = clean.strip()
+
         # Verify String Is Not Empty
         if clean == "":
             continue
