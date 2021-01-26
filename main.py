@@ -116,10 +116,11 @@ async def download_channels():
 
         # Telethon Provided Regex
         if not re.fullmatch(r"[a-zA-Z][\w\d]{3,30}[a-zA-Z\d]", clean):
-            print(f"{clean} Failed Telethon Regex!!! Logging...")
+            print(f"{clean} Failed Telethon Regex!!! Skipping and Logging...")
             with open(file="working/failed-regex-channels.txt", mode="a+") as failed_channel:
                 failed_channel.writelines(f"{clean}\n")
                 failed_channel.close()
+            continue
 
         # Test Case Insensitive File Match (Case Insensitivity Does Not Work For Path Variable)
         # Note, I Have A Case Sensitive File System, And Group Names Are Not Case Sensitive AFAICT
