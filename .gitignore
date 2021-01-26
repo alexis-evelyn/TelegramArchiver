@@ -6,5 +6,8 @@ login.ini
 # Venv
 venv
 
+# Working Directory
+working
+
 # Output
 *.csv
