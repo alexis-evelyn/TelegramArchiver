@@ -3,6 +3,7 @@
 import json
 import asyncio
 import configparser
+import urllib.parse
 
 from typing import Union, TextIO, List
 
@@ -58,6 +59,7 @@ async def download_channels():
 
     for line in channel_list:
         clean: str = line.lstrip("https://t.me/").strip()
+        clean: str = urllib.parse.unquote_plus(string=clean)
 
         if clean == "":
             continue
@@ -65,9 +67,18 @@ async def download_channels():
         try:
             await save_channel(channel=clean)
         except ValueError as e:
-            if "Cannot find any entity corresponding to" not in e.args[0]:
+            message: str = e.args[0]
+            ignore: bool = False
+
+            if "Cannot find any entity corresponding to" in message:
+                ignore: bool = True
+            elif "No user has" in message and "as username" in message:
+                ignore: bool = True
+
+            if not ignore:
                 print(e)
                 break
+
 
 
 print("Starting Download!!!")
