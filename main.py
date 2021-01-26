@@ -11,7 +11,7 @@ from typing import Union, TextIO, List, Optional
 
 from telethon import TelegramClient, errors
 from telethon.client.messages import _IDsIter, _MessagesIter
-from telethon.errors import ChannelPrivateError
+from telethon.errors import ChannelPrivateError, UsernameInvalidError
 from telethon.tl.types import Chat, Message
 
 config = configparser.ConfigParser()
@@ -110,6 +110,13 @@ async def download_channels():
         # Make Sure No Whitespace At Ends Of Channels
         clean: str = clean.strip()
 
+        # Telethon Provided Regex
+        if not re.fullmatch(r"[a-zA-Z][\w\d]{3,30}[a-zA-Z\d]", clean):
+            print(f"{clean} Failed Telethon Regex!!! Logging...")
+            with open(file="working/failed-regex-channels.txt", mode="a+") as failed_channel:
+                failed_channel.writelines(f"{clean}\n")
+                failed_channel.close()
+
         # Verify String Is Not Empty
         if clean == "":
             continue
@@ -127,9 +134,14 @@ async def download_channels():
 
         try:
             await save_channel(channel=clean)
+        except UsernameInvalidError as e:
+            print(f"{clean} Is A Failed Username Channel!!! Logging...")
+            with open(file="working/failed-username-channels.txt", mode="a+") as private:
+                private.writelines(f"{clean}\n")
+                private.close()
         except ChannelPrivateError as e:
             # telethon.errors.rpcerrorlist.ChannelPrivateError
-            print(f"{clean} Is A Private Channel!!! Logging!!!")
+            print(f"{clean} Is A Private Channel!!! Logging...")
             with open(file="working/private-channels.txt", mode="a+") as private:
                 private.writelines(f"{clean}\n")
                 private.close()
@@ -144,6 +156,11 @@ async def download_channels():
 
             if not ignore:
                 print(e)
+                print(f"{clean} Is A Failed ValueError Channel!!! Logging...")
+                with open(file="working/failed-value-error-channels.txt", mode="a+") as private:
+                    private.writelines(f"{clean}\n")
+                    private.writelines(f"{e}\n")
+                    private.close()
                 break
 
 
