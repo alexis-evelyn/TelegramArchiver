@@ -3,9 +3,11 @@
 import json
 import asyncio
 import configparser
+import os
+import re
 import urllib.parse
 
-from typing import Union, TextIO, List
+from typing import Union, TextIO, List, Optional
 
 from telethon import TelegramClient, errors
 from telethon.client.messages import _IDsIter, _MessagesIter
@@ -21,6 +23,20 @@ api_hash: str = config['auth']['key']
 
 client = TelegramClient('python-archiver', api_id, api_hash)
 client.start()
+
+
+def file_exists(path: str, file: Optional[str] = None) -> bool:
+    try:
+        files: List[str] = os.listdir(path=path)
+        files: List[str] = [x.lower() for x in files]
+
+        if file is not None and file.lower() in files:
+            return True
+        elif file is None:
+            return True
+        return False
+    except FileNotFoundError:
+        return False
 
 
 async def download_channel(channel: str) -> dict:
@@ -58,10 +74,51 @@ async def download_channels():
     channel_list: List[str] = channel_list_file.readlines()
 
     for line in channel_list:
-        clean: str = line.lstrip("https://t.me/").strip()
-        clean: str = urllib.parse.unquote_plus(string=clean)
+        clean: str = urllib.parse.unquote_plus(string=line)
 
+        # Strip Off Domain Name
+        clean: str = clean.lstrip("https://t.me/").strip()
+
+        # If Join Chat Instead Of Typical Invite Link, Strip Down To Group Name
+        if "joinchat/" in clean:
+            clean: str = clean.lstrip("joinchat/").strip()
+
+        # Why Is Robots.txt in Here? Remove It!
+        if "robots.txt" in clean:
+            clean: str = clean.rstrip("robots.txt").strip()
+
+        # Why Is Favicon.ico in Here? Remove It!
+        if "favicon.ico" in clean:
+            clean: str = clean.rstrip("favicon.ico").strip()
+
+        # Remove At Symbol
+        if "@" in clean:
+            clean: str = re.sub(r"[@]", r"", clean)
+
+        # Remove Query Parameters
+        if "?" in clean or "&" in clean:
+            clean: str = re.sub(r"(.*)([?].*)", r"\1", clean)
+            clean: str = re.sub(r"(.*)([&].*)", r"\1", clean)
+
+        # Remove Non-ASCII Characters (As Telegram Doesn't Accept Them At All)
+        if re.match(r"[^\x00-\x7F]+", clean):
+            print(f"Before: {clean}")
+            clean: str = re.sub(r"[^\x00-\x7F]+", r"", clean)
+            print(f"After: {clean}")
+
+        # Verify String Is Not Empty
         if clean == "":
+            continue
+
+        # Test Case Insensitive File Match (Case Insensitivity Does Not Work For Path Variable)
+        # Note, I Have A Case Sensitive File System, And Group Names Are Not Case Sensitive AFAICT
+        # I Also Want To Keep The Original Casing Of The Groups In The File Names
+        # print(file_exists(path="working", file="joinchat.txt"))
+        # print(file_exists(path="working", file="joinCHat.txt"))
+
+        # Verify File Was Not Already Downloaded (e.g. different casing, stripped parameters, etc...)
+        if file_exists(path="working/messages", file=f"{clean}.json"):
+            print(f"File {clean}.json Already Exists!!! Skipping...")
             continue
 
         try:
