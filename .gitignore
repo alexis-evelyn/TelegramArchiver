@@ -8,6 +8,11 @@ venv
 
 # Working Directory
 working
+json
+csv
+mini-json
+decompressed-json
 
 # Output
 *.csv
+failed-minification.txt
