@@ -44,7 +44,7 @@ def file_exists(path: str, file: Optional[str] = None) -> bool:
 async def download_channel(channel: str) -> dict:
     try:
         async with client.takeout(contacts=True, users=True, chats=True, megagroups=True, channels=True, files=False) as takeout:
-            chat: Chat = await client.get_entity(channel)  # get_input_entity(...)
+            chat: Chat = await takeout.get_entity(channel)  # get_input_entity(...)
             messages: Union[_MessagesIter, _IDsIter] = takeout.iter_messages(chat, wait_time=0)
 
             print(f"Downloading Channel: {channel}")
