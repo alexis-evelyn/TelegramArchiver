@@ -13,6 +13,7 @@
       <excludeFolder url="file://$MODULE_DIR$/csv" />
       <excludeFolder url="file://$MODULE_DIR$/mini-json" />
       <excludeFolder url="file://$MODULE_DIR$/json" />
+      <excludeFolder url="file://$MODULE_DIR$/decompressed-json" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.9 (TelegramArchiver)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
