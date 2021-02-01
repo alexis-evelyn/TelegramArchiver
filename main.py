@@ -154,6 +154,12 @@ async def download_channels():
                 ignore: bool = True
             elif "No user has" in message and "as username" in message:
                 ignore: bool = True
+            elif clean == message:
+                ignore: bool = True
+                print(f"{clean} Failed For Unknown ValueError Reasons!!! Logging...")
+                with open(file="working/failed-unknown-value-error-channels.txt", mode="a+") as private:
+                    private.writelines(f"{clean}\n")
+                    private.close()
 
             if not ignore:
                 print(e)
