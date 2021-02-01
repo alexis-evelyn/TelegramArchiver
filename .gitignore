@@ -16,3 +16,5 @@ decompressed-json
 # Output
 *.csv
 failed-minification.txt
+failed-upload.txt
+failed-download.txt
