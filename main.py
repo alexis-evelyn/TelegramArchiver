@@ -168,6 +168,6 @@ async def download_channels():
 
 print("Starting Download!!!")
 loop = asyncio.get_event_loop()
-# loop.run_until_complete(download_channels())
-loop.run_until_complete(download_channel("A1_112"))
+loop.run_until_complete(download_channels())
+# loop.run_until_complete(download_channel("A1_112"))
 print("Finished!!!")
