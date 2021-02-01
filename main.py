@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import time
 
 import json
 import asyncio
@@ -43,7 +44,7 @@ def file_exists(path: str, file: Optional[str] = None) -> bool:
 async def download_channel(channel: str) -> dict:
     try:
         async with client.takeout(contacts=True, users=True, chats=True, megagroups=True, channels=True, files=False) as takeout:
-            chat: Chat = await client.get_input_entity(channel)  # get_entity(...)
+            chat: Chat = await client.get_entity(channel)  # get_input_entity(...)
             messages: Union[_MessagesIter, _IDsIter] = takeout.iter_messages(chat, wait_time=0)
 
             print(f"Downloading Channel: {channel}")
@@ -67,6 +68,9 @@ async def save_channel(channel: str):
     save: TextIO = open(file=f"working/messages/{channel}.json", mode="w")
     save.writelines(json.dumps(obj=results, indent=4, sort_keys=True, default=str))
     save.close()
+
+    print("Waiting 30 Seconds!!!")
+    time.sleep(30)
 
 
 async def download_channels():
@@ -154,6 +158,12 @@ async def download_channels():
                 ignore: bool = True
             elif "No user has" in message and "as username" in message:
                 ignore: bool = True
+            elif "Request was unsuccessful 6 time(s)" in message:
+                ignore: bool = True
+                print(f"{clean} Failed For Timeout Reasons!!! Logging...")
+                with open(file="working/failed-timeout-error-channels.txt", mode="a+") as private:
+                    private.writelines(f"{clean}\n")
+                    private.close()
             elif clean == message:
                 ignore: bool = True
                 print(f"{clean} Failed For Unknown ValueError Reasons!!! Logging...")
