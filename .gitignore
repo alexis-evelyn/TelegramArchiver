@@ -16,4 +16,3 @@ decompressed-json
 # Output
 *.csv
 failed-minification.txt
-decompressed-json
