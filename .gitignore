@@ -12,6 +12,7 @@ json
 csv
 mini-json
 decompressed-json
+mini-json-dropbox
 
 # Output
 *.csv
