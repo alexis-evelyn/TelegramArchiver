@@ -69,8 +69,8 @@ async def save_channel(channel: str):
     save.writelines(json.dumps(obj=results, indent=4, sort_keys=True, default=str))
     save.close()
 
-    print("Waiting 30 Seconds!!!")
-    time.sleep(30)
+    print("Waiting 5 Seconds!!!")
+    time.sleep(5)
 
 
 async def download_channels():
